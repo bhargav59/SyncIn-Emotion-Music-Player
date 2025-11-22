@@ -36,7 +36,13 @@ class MultimodalMusicPlayer:
         self.recommender = MusicRecommendationEngine(self.music_analyzer)
         
         # Initialize pygame for music
-        pygame.mixer.init()
+        try:
+            pygame.mixer.init()
+        except pygame.error as e:
+            print(f"⚠️  Audio device not found: {e}")
+            print("   Switching to dummy audio driver for simulation.")
+            os.environ["SDL_AUDIODRIVER"] = "dummy"
+            pygame.mixer.init()
         
         print("✅ All systems ready!\n")
         
