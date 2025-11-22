@@ -21,26 +21,23 @@ This project implements a **deep learning framework** that:
 
 ## 🎯 Features
 
-### Current (v1.0)
+### Current (v2.0 - Multimodal) 🚀
 
+- ✅ **Multimodal Emotion Detection**: Combines Facial, Audio, and Text analysis
 - ✅ **Real-time Facial Emotion Detection**: Webcam-based facial expression analysis
-- ✅ **AI-Powered Recognition**: TensorFlow CNN for emotion classification
-- ✅ **Automatic Music Selection**: Mood-based song recommendations
-- ✅ **Three Emotion Categories**: Angry, Happy, and Neutral/Sad
-- ✅ **Interactive Music Controls**: Full playback control with GUI
-- ✅ **Error Handling**: Robust audio file processing
+- ✅ **Audio Emotion Recognition**: Voice/speech emotion detection
+- ✅ **Text Sentiment Analysis**: NLP-based emotion from text input
+- ✅ **Music Emotion Recognition**: Analyze emotions IN music tracks
+- ✅ **Attention-Based Fusion**: Deep learning multimodal integration
+- ✅ **Advanced Recommendations**: Mood regulation & enhancement strategies
+- ✅ **Interactive Music Controls**: Full playback control with GUI showing Song & Emotion Emoji
 - ✅ **Cross-Platform**: macOS, Linux, and Windows support
 
-### Upcoming (v2.0 - Multimodal) 🚀
+### Upcoming (v3.0)
 
-- 🔄 **Audio Emotion Recognition**: Voice/speech emotion detection
-- 🔄 **Text Sentiment Analysis**: NLP-based emotion from text input
-- 🔄 **Music Emotion Recognition**: Analyze emotions IN music tracks
-- 🔄 **Attention-Based Fusion**: Deep learning multimodal integration
-- 🔄 **Biosignal Integration**: Heart rate & GSR emotion detection (optional)
+- 🔄 **Biosignal Integration**: Heart rate & GSR emotion detection
 - 🔄 **Context Awareness**: Temporal and environmental context
-- 🔄 **Advanced Recommendations**: Mood regulation & enhancement strategies
-- 🔄 **Professional Dashboard**: Real-time multimodal visualization
+- 🔄 **Cloud Integration**: Sync playlists across devices
 
 📋 **See [TODO.md](TODO.md) for detailed implementation checklist**
 
@@ -113,79 +110,64 @@ The application will:
 
 ## 🔄 How It Works
 
-### System Flow
+### System Flow (v2.0)
 
 ```
-┌─────────────────┐
-│  Webcam Capture │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Face Detection  │ (OpenCV Haar Cascade)
-│ haarcascade_    │
-│ frontalface_    │
-│ alt.xml         │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Emotion         │ (TensorFlow Model)
-│ Recognition     │ retrained_graph.pb
-│ (label_image.py)│
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Collect 10      │
-│ Predictions     │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Determine Most  │
-│ Common Emotion  │
-│ (Angry/Happy/   │
-│  Neutral-Sad)   │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Load Song from  │
-│ emotions_file/  │
-│ [emotion].csv   │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Play Music      │ (Pygame)
-│ from songs/     │
-└─────────────────┘
+┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+│    Webcam    │  │  Microphone  │  │  Text Input  │
+└──────┬───────┘  └──────┬───────┘  └──────┬───────┘
+       │                 │                 │
+       ▼                 ▼                 ▼
+┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+│ Facial       │  │ Audio        │  │ Text         │
+│ Emotion      │  │ Emotion      │  │ Sentiment    │
+│ Detection    │  │ Detection    │  │ Analysis     │
+└──────┬───────┘  └──────┬───────┘  └──────┬───────┘
+       │                 │                 │
+       └────────┐        │        ┌────────┘
+                ▼        ▼        ▼
+           ┌──────────────────────────┐
+           │    Multimodal Fusion     │
+           │ (Attention-Based Model)  │
+           └────────────┬─────────────┘
+                        │
+                        ▼
+           ┌──────────────────────────┐
+           │   Emotion Prediction     │
+           └────────────┬─────────────┘
+                        │
+                        ▼
+           ┌──────────────────────────┐
+           │ Recommendation Engine    │
+           │ (Mood Matching/Reg.)     │
+           └────────────┬─────────────┘
+                        │
+                        ▼
+           ┌──────────────────────────┐
+           │      Music Player        │
+           │ (GUI with Song & Emoji)  │
+           └──────────────────────────┘
 ```
 
 ### Detailed Process
 
-1. **Face Detection (`label.py`)**
+1. **Multimodal Detection**
+   - **Face**: Uses OpenCV & TensorFlow to detect expressions
+   - **Audio**: Uses Librosa & SoundDevice to analyze voice tone
+   - **Text**: Uses Transformers (NLP) to analyze sentiment
 
-   - Captures video from webcam using OpenCV
-   - Detects faces using Haar Cascade classifier
-   - Extracts face region and saves as `test.jpg`
+2. **Fusion & Prediction**
+   - Combines probabilities from all sources
+   - Uses attention mechanism to weight more confident modalities
+   - Determines final dominant emotion
 
-2. **Emotion Recognition (`label_image.py`)**
+3. **Recommendation**
+   - Selects music based on emotion
+   - Can use "Mood Matching" (Sad -> Sad song) or "Mood Regulation" (Sad -> Happy song)
 
-   - Loads pre-trained TensorFlow model (`retrained_graph.pb`)
-   - Processes face image through neural network
-   - Returns emotion classification (1=Angry, 2=Happy, 3=Neutral/Sad)
-
-3. **Prediction Collection**
-
-   - Collects 10 emotion predictions for accuracy
-   - Calculates most frequent emotion detected
-
-4. **Music Selection (`play_music_pygame.py`)**
-   - Reads corresponding CSV file from `emotions_file/`
-   - Randomly selects a song from the playlist
-   - Loads and plays the MP3 file using Pygame
+4. **Playback**
+   - Plays selected track
+   - Displays Song Name and Emotion Emoji in a GUI window
 
 ## 📁 Project Structure
 

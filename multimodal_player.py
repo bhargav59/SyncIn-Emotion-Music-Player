@@ -109,7 +109,7 @@ class MultimodalMusicPlayer:
         
         return detected_emotion, song
         
-    def play_music(self, song_name):
+    def play_music(self, song_name, detected_emotion):
         """Play the recommended song"""
         if not song_name:
             print("⚠️  No song available")
@@ -131,10 +131,20 @@ class MultimodalMusicPlayer:
             pygame.mixer.music.play()
             
             # Create simple control window
-            screen = pygame.display.set_mode((400, 200))
-            pygame.display.set_caption(f"Playing: {song_name}")
+            screen = pygame.display.set_mode((600, 400))
+            pygame.display.set_caption(f"SyncIn Player - {detected_emotion.title()}")
             clock = pygame.time.Clock()
             font = pygame.font.Font(None, 36)
+            emoji_font = pygame.font.SysFont("segoeuiemoji", 100) # Try to use a font that supports emojis
+            
+            # Emoji mapping
+            emoji_dict = {
+                'angry': '😠', 
+                'happy': '😊', 
+                'neutral': '😐', 
+                'sad': '😢'
+            }
+            emoji_char = emoji_dict.get(detected_emotion, '😐')
             
             running = True
             paused = False
@@ -161,14 +171,36 @@ class MultimodalMusicPlayer:
                 # Draw
                 screen.fill((30, 30, 40))
                 
+                # Display Emoji (or fallback text if font fails)
+                try:
+                    emoji_surface = emoji_font.render(emoji_char, True, (255, 255, 255))
+                    # Center the emoji
+                    emoji_rect = emoji_surface.get_rect(center=(300, 150))
+                    screen.blit(emoji_surface, emoji_rect)
+                except:
+                    # Fallback if emoji rendering fails
+                    emoji_text = font.render(f"Emotion: {detected_emotion.title()}", True, (255, 200, 100))
+                    screen.blit(emoji_text, (50, 150))
+
                 # Song name
-                text = font.render(song_name[:20], True, (255, 255, 255))
-                screen.blit(text, (50, 50))
+                song_text = font.render(f"Song: {song_name}", True, (255, 255, 255))
+                song_rect = song_text.get_rect(center=(300, 250))
+                screen.blit(song_text, song_rect)
                 
                 # Status
                 status = "PAUSED" if paused else "PLAYING"
-                status_text = font.render(status, True, (100, 255, 100) if not paused else (255, 200, 100))
-                screen.blit(status_text, (50, 100))
+                status_color = (255, 200, 100) if paused else (100, 255, 100)
+                status_text = font.render(status, True, status_color)
+                status_rect = status_text.get_rect(center=(300, 320))
+                screen.blit(status_text, status_rect)
+                
+                # Controls hint
+                hint_text = font.render("P: Pause | R: Resume | S: Stop | Q: Quit", True, (150, 150, 150))
+                hint_rect = hint_text.get_rect(center=(300, 370))
+                # Scale down hint text
+                hint_text = pygame.transform.scale(hint_text, (int(hint_rect.width * 0.7), int(hint_rect.height * 0.7)))
+                hint_rect = hint_text.get_rect(center=(300, 370))
+                screen.blit(hint_text, hint_rect)
                 
                 pygame.display.flip()
                 clock.tick(30)
@@ -205,7 +237,7 @@ class MultimodalMusicPlayer:
         
         # Play music
         if song:
-            self.play_music(song)
+            self.play_music(song, detected_emotion)
         else:
             print("⚠️  Could not find a suitable song")
             
